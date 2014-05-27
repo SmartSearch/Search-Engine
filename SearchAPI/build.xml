@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="build" name="SMARTAPI">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="SMARTAPI.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/asm-3.3.1.jar"/>
+        <pathelement location="lib/grizzly-framework-2.2.4.jar"/>
+        <pathelement location="lib/grizzly-http-2.2.4.jar"/>
+        <pathelement location="lib/grizzly-http-server-2.2.4.jar"/>
+        <pathelement location="lib/gson-1.7.1.jar"/>
+        <pathelement location="lib/jersey-core-1.13.jar"/>
+        <pathelement location="lib/jersey-grizzly2-1.13.jar"/>
+        <pathelement location="lib/jersey-server-1.13.jar"/>
+        <pathelement location="lib/jsr311-api-1.1.1.jar"/>
+        <pathelement location="lib/trove-3.0.3.jar"/>
+        <pathelement location="lib/realtime_terrier_1.0.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="SMARTAPI.classpath"/>
+        </javac>
+    </target>
+    
+    <target name="jar">       
+        <jar destfile="smart_search_api.0.1.jar" basedir="bin"></jar>
+    </target>
+  
+    <target name="RESTApiServer">
+        <java classname="eu.smartfp7.terrier.storm.api.RESTApiServer" failonerror="true" fork="yes">
+            <classpath refid="SMARTAPI.classpath"/>
+        </java>
+    </target>
+</project>
